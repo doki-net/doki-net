@@ -1,0 +1,11 @@
+{
+  "nodes":[
+    [{"bias":0},{"bias":0}],
+    [{"bias":0}]
+  ],
+  "edges":[
+    {"fcol":0, "fid":0, "tcol":1, "tid":0, "weight":0.1},
+    {"fcol":0, "fid":1, "tcol":1, "tid":0, "weight":0.1}
+  ],
+  "mutationRate":0.1
+}
