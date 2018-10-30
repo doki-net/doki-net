@@ -16,3 +16,7 @@ Compiling/Developing on Monika:
  - All listed for using Monika
  - bash/equivalent shell
  - gcc compiler
+
+### Calling ANN, RNN and CNN
+
+<ann|rnn|cnn> <network|network file> <use network file> <inputs|inputs file> <use inputs file>
