@@ -37,3 +37,5 @@ for f in $BUILD_PATH/lib/*.c; do
   echo "Removing $f"
   rm $f
 done
+
+./test.sh $BUILD_PATH
