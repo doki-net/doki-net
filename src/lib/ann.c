@@ -5,6 +5,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+
+// Exit codes
+const int NO_ERROR=0;
+const int BASIC_ERROR=1;
+const int PROGRAM_ARGUMENTS_ERROR=2;
+const int MALFORMED_NETWORK_STRING=3;
+const int MALFORMED_INPUT_STRING=4;
 
 // Variable declaration
 const int expectedArgs = 2;
@@ -41,28 +49,62 @@ struct Network{
 //#                         Functions declaration                              #
 //##############################################################################
 
-char ** splitstr(char *str){
-  char **results;
-  int n=0;
+//******************************************************************************
+//*                          Utility Functions                                 *
+//******************************************************************************
 
-  printf ("String \"%s\" is split into tokens:\n", str);
-  for(char *p = strtok(str,",:"); p!= NULL; p = strtok(NULL, ",:")){
-    n++;
+char * nextTok(char *p){
+  if((p=strtok(NULL, ",")) == NULL){
+    fprintf(stderr, "Tried to get next token, but next token is NULL\n");
+    exit(MALFORMED_NETWORK_STRING);
   }
-
-  results = malloc(n*sizeof(char*));
-
-  int a=0;
-  for(char *p = strtok(str,",:"); p!= NULL; p = strtok(NULL, ",:")){
-    results[a] = p;
-    a++;
-  }
-
-  return results;
+  return p;
 }
+
+double toDouble(char *p){
+  double d;
+  sscanf(p, "%lf", &d);
+  return d;
+}
+int toInt(char *p){
+  int i;
+  sscanf(p, "%i", &i);
+  return i;
+}
+
+//******************************************************************************
+//*                             ANN Functions                                  *
+//******************************************************************************
 
 struct Network* loadNetwork(char *str){
   struct Network *net = malloc(sizeof(struct Network));
+
+  char *p = strtok(str, ",");
+  int nodeCount=toInt(p);
+  p = nextTok(p);
+  int edgeCount=toInt(p);
+
+  net->nodes = malloc(sizeof(struct Node)*nodeCount);
+  net->edges = malloc(sizeof(struct Edge)*edgeCount);
+
+  int a=0;
+  while(a < nodeCount){
+    p = nextTok(p);
+    net->nodes[a].bias = toDouble(p);
+    net->nodes[a].val=0;
+    a++;
+  }
+
+  a=0;
+  while(a < edgeCount){
+    p = nextTok(p);
+    net->edges[a].from = toInt(p);
+    p = nextTok(p);
+    net->edges[a].to = toInt(p);
+    p = nextTok(p);
+    net->edges[a].weight = toDouble(p);
+    a++;
+  }
 
   return net;
 }
@@ -78,34 +120,24 @@ int main(int argc, char** argv){
   // Check correct number of arguments are supplied
   if(argc != expectedArgs+1){
     // Incorrect number supplied
-    fprintf(stderr, "%i arguments where supplied, %i arguments expected",
+    fprintf(stderr, "%i argument(s) where supplied, %i argument(s) expected\n",
             argc-1, expectedArgs);
-    return 1;
+    return PROGRAM_ARGUMENTS_ERROR;
   }
 
-  printf("Using arguments:\n");
+  fprintf(stderr, "Using arguments:\n");
   for(int a=0; a<argc; a++){
-    printf("%s\n", argv[a]);
+    fprintf(stderr, "%s\n", argv[a]);
   }
-
-  char **str = splitstr(argv[1]);
-  int n = 0;
-
-  printf("Result of split function on %s\n", argv[1]);
-  printf("Split count: %i\n", n);
-  for(int a=0; a<n; a++){
-    printf("%i : %s\n", a, strs[a]);
-  }
-
-  return 0;
 
   // Load network
   struct Network *net;
-  if(argv[2] == '1'){
+  if(*argv[2] == '1'){
     // Load from file
   }else{
     // Load from parsed parameters
     net = loadNetwork(argv[1]);
+    printf("%f", net->edges->weight);
   }
 
   // Load input
