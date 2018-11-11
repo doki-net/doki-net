@@ -127,12 +127,13 @@ struct Network* loadNetwork(char *str){
 double* execute(struct Network *net, double *input){
   double *results = malloc(sizeof(double)*net->outSize);
 
-  if(sizeof(*input)/sizeof(double) != net->inSize){
+  printf("Input count: %i\n", input[0]);
+  if(input[0] != net->inSize){
     exit(INPUT_SIZE_ERROR);
   }
 
   for(int a=0; a<net->inSize; a++){
-    net->nodes[a].val = input[a];
+    net->nodes[a].val = input[a+1];
   }
 
   for(int a=0; a<net->nEdge; a++){
@@ -174,16 +175,19 @@ int main(int argc, char** argv){
   // Load input
   char *p = strtok(argv[2], ",");
   int n = atoi(p);
-  double *inputs = malloc(sizeof(double)*n);
-  for(int a=0; a<n; a++){
+  printf("%i\n", n);
+  double *inputs = malloc(sizeof(double)*(n+1));
+  inputs[0] = n;
+  for(int a=1; a<=n; a++){
     p = nextTok(p);
     inputs[a] = atof(p);
+    printf("%i\n", a);
   }
 
   // Execute network
   double *results = execute(net, inputs);
 
-  for(int a=0; a<sizeof(*results)/sizeof(results[0]); a++){
+  for(int a=0; a<net->outSize; a++){
     printf("%f\n", results[a]);
   }
 
