@@ -20,3 +20,13 @@ Compiling/Developing on Monika:
 ### Calling ANN, RNN and CNN
 
 <ann|rnn|cnn> <network|network file> <use network file> <inputs|inputs file> <use inputs file>
+
+### Structure of a network
+
+A network is stored as a list of values comma separated.
+
+The first value is the number of input nodes, the second is the number of output nodes. The third is the total number of nodes and the 4th is the total number of edges. The rest of the following values are all the values for each of the nodes and then the edges.
+
+#### Structuring inputs
+
+Like network strings inputs are a comma seperated list. The first number is the number of inputs. the rest are the inputs

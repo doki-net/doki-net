@@ -4,6 +4,11 @@
 DATE_TIME=`date +%F-%H-%M`
 BUILD_PATH="./build/$DATE_TIME"
 
+# Check there is a build directory
+if [ ! -d "./build/" ]; then
+  mkdir "./build/"
+fi
+
 # Check if the build path exists
 if [ -d $BUILD_PATH ]; then
   # If the build path exists then stop here
