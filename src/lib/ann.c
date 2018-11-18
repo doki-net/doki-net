@@ -14,6 +14,8 @@ const int BASIC_ERROR=1;
 const int PROGRAM_ARGUMENTS_ERROR=2;
 const int MALFORMED_VALUE_STRING=3;
 const int INPUT_SIZE_ERROR=4;
+const int FAILED_TO_LOAD_NETWORK_FILE=5;
+const int FAILED_TO_LOAD_INPUT_FILE=6;
 
 // Variable declaration
 const int expectedArgs = 2;
@@ -158,7 +160,13 @@ double* execute(struct Network *net, double *input){
 }
 
 //##############################################################################
-//#                           Main declaration                                 #
+//                            Main declaration
+//
+// Arguments:
+//  - argc : number of arguments passed
+//  - argv : a vector of the arguments passed
+//    - argv[1] : network to load
+//    - argv[2] : input data to use
 //##############################################################################
 int main(int argc, char** argv){
   // Check correct number of arguments are supplied
@@ -188,7 +196,7 @@ int main(int argc, char** argv){
   double *results = execute(net, inputs);
 
   for(int a=0; a<net->outSize; a++){
-    printf("%f\n", results[a]);
+    printf("%f,", results[a]);
   }
 
   return 0;
