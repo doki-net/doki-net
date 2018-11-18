@@ -14,6 +14,8 @@ const int BASIC_ERROR=1;
 const int PROGRAM_ARGUMENTS_ERROR=2;
 const int MALFORMED_VALUE_STRING=3;
 const int INPUT_SIZE_ERROR=4;
+const int FAILED_TO_LOAD_NETWORK_FILE=5;
+const int FAILED_TO_LOAD_INPUT_FILE=6;
 
 // Variable declaration
 const int expectedArgs = 2;
@@ -127,12 +129,13 @@ struct Network* loadNetwork(char *str){
 double* execute(struct Network *net, double *input){
   double *results = malloc(sizeof(double)*net->outSize);
 
-  if(sizeof(*input)/sizeof(double) != net->inSize){
+  printf("Input count: %i\n", input[0]);
+  if(input[0] != net->inSize){
     exit(INPUT_SIZE_ERROR);
   }
 
   for(int a=0; a<net->inSize; a++){
-    net->nodes[a].val = input[a];
+    net->nodes[a].val = input[a+1];
   }
 
   for(int a=0; a<net->nEdge; a++){
@@ -157,7 +160,13 @@ double* execute(struct Network *net, double *input){
 }
 
 //##############################################################################
-//#                           Main declaration                                 #
+//                            Main declaration
+//
+// Arguments:
+//  - argc : number of arguments passed
+//  - argv : a vector of the arguments passed
+//    - argv[1] : network to load
+//    - argv[2] : input data to use
 //##############################################################################
 int main(int argc, char** argv){
   // Check correct number of arguments are supplied
@@ -174,17 +183,20 @@ int main(int argc, char** argv){
   // Load input
   char *p = strtok(argv[2], ",");
   int n = atoi(p);
-  double *inputs = malloc(sizeof(double)*n);
-  for(int a=0; a<n; a++){
+  printf("%i\n", n);
+  double *inputs = malloc(sizeof(double)*(n+1));
+  inputs[0] = n;
+  for(int a=1; a<=n; a++){
     p = nextTok(p);
     inputs[a] = atof(p);
+    printf("%i\n", a);
   }
 
   // Execute network
   double *results = execute(net, inputs);
 
-  for(int a=0; a<sizeof(*results)/sizeof(results[0]); a++){
-    printf("%f\n", results[a]);
+  for(int a=0; a<net->outSize; a++){
+    printf("%f,", results[a]);
   }
 
   return 0;
