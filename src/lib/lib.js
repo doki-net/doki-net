@@ -11,5 +11,15 @@ if(plat == "win32"){
 
 module.exports = function(program, args){
   var cmd = spawnSync(program+extention, args);
-  return {"stdout":cmd.stdout.toString('utf-8'), "stderr":cmd.stderr.toString('utf-8'), "rc":cmd.status};
+  var stdout = "";
+  if(cmd.stdout != null)stdout = cmd.stdout.toString('utf-8');
+  var stderr = "";
+  if(cmd.stderr != null)stderr = cmd.stderr.toString('utf-8');
+  var rc = "";
+  if(cmd.status != null)rc = cmd.status;
+  if(rc != 0){
+    console.log(program+extention +" : "+ args);
+    console.log({"stdout":stdout, "stderr":stderr, "rc":rc});
+  }
+  return {"stdout":stdout, "stderr":stderr, "rc":rc};
 };

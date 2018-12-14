@@ -73,6 +73,7 @@ char * nextTok(char *p){
 
 struct Node activationFunction(struct Node node){
   //node.val = tanh(node.val);
+  node.val += node.bias;
   node.processed = 1;
   return node;
 }
@@ -81,20 +82,14 @@ struct Network* loadNetwork(char *str){
   struct Network *net = malloc(sizeof(struct Network));
 
   char *p = strtok(str, ",");
-  printf("inSize token: %s\n", p);
   net->inSize = atoi(p);
   p = nextTok(p);
-  printf("outSize token: %s\n", p);
   net->outSize = atoi(p);
 
   p = nextTok(p);
-  printf("nNode token: %s\n", p);
   net->nNode=atoi(p);
   p = nextTok(p);
-  printf("nEdge token: %s\n", p);
   net->nEdge=atoi(p);
-
-  printf("%i, %i\n", net->nNode, net->nEdge);
 
   net->nodes = malloc(sizeof(struct Node)*net->nNode);
   net->edges = malloc(sizeof(struct Edge)*net->nEdge);
@@ -102,7 +97,6 @@ struct Network* loadNetwork(char *str){
   int a=0;
   while(a < net->nNode){
     p = nextTok(p);
-    printf("node bias token: %s\n", p);
     net->nodes[a].bias = (double)atof(p);
     net->nodes[a].val=0;
     net->nodes[a].processed=0;
@@ -112,13 +106,10 @@ struct Network* loadNetwork(char *str){
   a=0;
   while(a < net->nEdge){
     p = nextTok(p);
-    printf("edge from   token: %s\n", p);
     net->edges[a].from = atoi(p);
     p = nextTok(p);
-    printf("edge to     token: %s\n", p);
     net->edges[a].to = atoi(p);
     p = nextTok(p);
-    printf("edge weight token: %s\n", p);
     net->edges[a].weight = (double)atof(p);
     a++;
   }
@@ -129,7 +120,6 @@ struct Network* loadNetwork(char *str){
 double* execute(struct Network *net, double *input){
   double *results = malloc(sizeof(double)*net->outSize);
 
-  printf("Input count: %i\n", input[0]);
   if(input[0] != net->inSize){
     exit(INPUT_SIZE_ERROR);
   }
@@ -139,20 +129,20 @@ double* execute(struct Network *net, double *input){
   }
 
   for(int a=0; a<net->nEdge; a++){
-    printf("Edge: %i - %i - %f\n", net->edges[a].from, net->edges[a].to, net->edges[a].weight);
     int from = net->edges[a].from;
     int to = net->edges[a].to;
-    printf("%i - %i:%f - %i:%f\n", a, from, net->nodes[from].val, to, net->nodes[to].val);
-    if(!net->nodes[from].processed){
+    if(net->nodes[from].processed == 0){
       net->nodes[from] = activationFunction(net->nodes[from]);
     }
     net->nodes[to].val += net->nodes[from].val*net->edges[a].weight;
-    printf("%i - %i:%f - %i:%f\n", a, net->nNode, net->nodes[from].val, net->nEdge, net->nodes[to].val);
   }
 
   int aStart = net->nNode-net->outSize;
 
   for(int a=aStart; a<net->nNode; a++){
+    if(net->nodes[a].processed == 0){
+      net->nodes[a] = activationFunction(net->nodes[a]);
+    }
     results[a-aStart] = net->nodes[a].val;
   }
 
@@ -183,20 +173,21 @@ int main(int argc, char** argv){
   // Load input
   char *p = strtok(argv[2], ",");
   int n = atoi(p);
-  printf("%i\n", n);
   double *inputs = malloc(sizeof(double)*(n+1));
   inputs[0] = n;
   for(int a=1; a<=n; a++){
     p = nextTok(p);
     inputs[a] = atof(p);
-    printf("%i\n", a);
   }
 
   // Execute network
   double *results = execute(net, inputs);
 
   for(int a=0; a<net->outSize; a++){
-    printf("%f,", results[a]);
+    printf("%f", results[a]);
+    if(a != net->outSize-1){
+      printf(",");
+    }
   }
 
   return 0;
