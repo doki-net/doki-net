@@ -1,3 +1,5 @@
+import math
+
 def f(node, training=False):
     node['activated'] = True
     node['value'] += node['bias']
