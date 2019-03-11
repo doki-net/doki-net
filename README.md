@@ -1,32 +1,52 @@
-# Monika
+# Doki-net
 
-### Abstract
+## Examples
 
-Monika is an experimental ML library I(Oliver Fallows) am developing. Monika uses a NEAT neural network structure, meaning that the number of neurons in Monika's networks can change throughout training allowing for more efficient solutions. Monika is optimised using the GAN technique meaning that there is always 2 networks that are the result of the same training.
+Plenty of examples can be found in the aptly named examples folder.
 
-### Dependencies
+### Structure of nodes and edges
 
-I have tried to keep Monika as self dependent as possible but there are some dependencies, found listed below in two categories.
+Each node and edge is a JSON object. The structure of each type of node and edge is
+shown below:
 
-Just using Monika:
- - Node.js
- - npm
+---
 
-Compiling/Developing on Monika:
- - All listed for using Monika
- - bash/equivalent shell
- - gcc compiler
+#### ANN:
 
-### Calling ANN, RNN and CNN
+##### node:
 
-<ann|rnn|cnn> <network|network file> <use network file> <inputs|inputs file> <use inputs file>
+```javascript
+{
+  "bias"      : 0.0,      // Bias of the node
+  "type"      : Type.RELU // Type refers to the activation function of a node and is set using an enum
+}
+```
 
-### Structure of a network
+##### edge:
+```javascript
+  "from" : 0     // The index of the node that this edge takes a value from
+  "to"   : 1     // The index of the node that this edge sends the value to
+  "weight" : 0.1 // The weight of the edge
+```
 
-A network is stored as a list of values comma separated.
+---
 
-The first value is the number of input nodes, the second is the number of output nodes. The third is the total number of nodes and the 4th is the total number of edges. The rest of the following values are all the values for each of the nodes and then the edges.
+#### RNN (Fully-Recurrent):
 
-#### Structuring inputs
+##### node:
 
-Like network strings inputs are a comma seperated list. The first number is the number of inputs. the rest are the inputs
+```javascript
+{
+  "alpha"  : 0.0, // Alpha is the weight of recurrent signal
+  "bias"   : 0.0, // Bias of the node
+  "type"      : Type.RELU
+}
+```
+
+---
+
+#### CNN (In-Development):
+
+```javascript
+
+```
