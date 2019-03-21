@@ -19,4 +19,4 @@ print("nodes: " + str(net['nodes']))
 print("edges: " + str(net['edges']))
 print("")
 
-print(execute(net, [1,1]))
+print(execute(net, [1,1,1]))
