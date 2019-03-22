@@ -1,4 +1,3 @@
-import numpy as np
 from .nodes import *
 
 def execute(net, input, training=False, new=False):

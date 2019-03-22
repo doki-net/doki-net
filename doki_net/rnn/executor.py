@@ -1,7 +1,6 @@
-import numpy as np
 from .nodes import *
 
-def execute(net, input, training=False):
+def execute(net, input, training=False, new=False):
     # Grab variables
     ins   = net['ins']
     outs  = net['outs']
@@ -9,8 +8,11 @@ def execute(net, input, training=False):
     edges = sorted(net['edges'], key=lambda k:k['from'])
 
     for n in nodes:
+        if new or not 'result' in n:
+            n['results'] = []
+            n['values'] = []
+            n['result'] = 0
         n['value'] = 0
-        n['result'] = 0
         n['activated'] = False
 
     for a in range(ins):
@@ -30,8 +32,6 @@ def execute(net, input, training=False):
         results.append(nodes[a]['result'])
 
     for n in nodes:
-        if not training:
-            del n['result']
         del n['activated']
 
     return results

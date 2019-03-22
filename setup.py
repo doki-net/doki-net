@@ -5,8 +5,8 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='doki-net',
-    version='0.1.0.0',
-    scripts=['ann','rnn','cnn'] ,
+    version='0.2.0.1',
+    scripts=[] ,
     author="Oliver Fallows",
     author_email="ollyfallows@outlook.com",
     description="A standard neural network implementation",
